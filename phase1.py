@@ -1,7 +1,10 @@
+# %%
 import helper
 import phase1Helper
-# first: copy worksheet2 to worksheet1
 excelname = "record"
-fromworksheet = "phoneview"
+fromworksheet = "newcandidate"
 toworksheetname = "everyone"
+# phase1 upadte to the new list and write down the list to sending mails
 phase1Helper.copyfromtwotoone(excelname, fromworksheet, toworksheetname)
+
+# %%

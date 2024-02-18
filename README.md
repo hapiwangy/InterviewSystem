@@ -12,3 +12,10 @@
 
 ## phase2
 ### 1. do the update from tech_2, non_tech_2 to fail, tech_3, non_tech_3
+
+# pre-request
+# have directory to put your csv files
+    # phase1_pass
+    # phase1_thanks
+    # phase2_pass
+    # phase2_thanks

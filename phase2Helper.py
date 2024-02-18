@@ -1,4 +1,4 @@
-def copyfromtwotoone(excelname: str, fromworksheet: str, toworksheetname: str)-> None:
+def copyfromtwotoone(excelname: str, fromworksheet: str, toworksheetname: str ,index:int)-> None:
     '''
         get the new data in specific and add to the new 
     '''
@@ -11,9 +11,11 @@ def copyfromtwotoone(excelname: str, fromworksheet: str, toworksheetname: str)->
     from_work = excelbook.worksheets[SheetNames.index(fromworksheet)]
     # to workbook
     to_work = excelbook.worksheets[SheetNames.index(toworksheetname)]
-    
+    # tks workbook
+    tks_work = excelbook.worksheets[-1]
     # adding data in from to to 
     last_row = to_work.max_row
+    last_tks_row = tks_work.max_row
     headers = []
     header_to_index = {}
     pass_letter = []
@@ -25,29 +27,35 @@ def copyfromtwotoone(excelname: str, fromworksheet: str, toworksheetname: str)->
                 header_to_index[i.value] = index
                 headers.append(i.value)
         else:
-            last_row += 1
             # 下面這個決定要把資料新增到哪裡
             # 這裡的數字會根據通過和職位的欄位做更改
             which = wheretogo(item[header_to_index['通過']], item[header_to_index['職位']])
             addingdatas(excelbook, SheetNames, which, item)
             pass_letter, fail_letter = turningToList(pass_letter, fail_letter, which, item, header_to_index)
-            for index, i in enumerate(item):
-                to_work[f"{chr(ord('A') + index)}{last_row}"] = i.value
+            if which == "ThanksList":
+                last_tks_row += 1
+                for index, i in enumerate(item):
+                    tks_work[f"{chr(ord('A') + index)}{last_tks_row}"] = None     
+            else:
+                last_row += 1
+                for index, i in enumerate(item):
+                    to_work[f"{chr(ord('A') + index)}{last_row}"] = i.value
+                       
     # do the letter order management
     pass_dec = False
     fail_dec = False
     if pass_letter:
-        helper.NameListTomail(pass_letter, "通過一階段面試名單", "phase1", "pass")
+        helper.NameListTomail(pass_letter, "通過二階段面試名單", "phase2", "pass")
         pass_dec = not pass_dec
     if fail_letter:
-        helper.NameListTomail(fail_letter, "第一階段感謝信名單", "phase1", "thanks")
+        helper.NameListTomail(fail_letter, "第二階段感謝信名單", "phase2", "thanks")
         fail_dec = not fail_dec
     if not pass_dec and not fail_dec:
         print("本次沒有人通過以及被刷掉，請透過人工確認是否有誤")
     
     # remove worksheet and adding new headers
     excelbook.remove(from_work)
-    new_sheet = excelbook.create_sheet(fromworksheet, index = 1)
+    new_sheet = excelbook.create_sheet(fromworksheet, index = index)
     for i, x in enumerate(headers):
         new_sheet[f"{chr(ord('A') + i)}1"] = x
 
