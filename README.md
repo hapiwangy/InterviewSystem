@@ -19,3 +19,14 @@
     # phase1_thanks
     # phase2_pass
     # phase2_thanks
+
+# 修正
+1. 第二階段和感謝信增加已經寄信(時間戳記)
+2. 每個階段的欄位做調整，更改如下
+是否已經寄信|通過|剩下資料
+3. 有資料有空行的時候，會出錯
+    測試是否可以並行或是max_row的計算方式
+
+bouns:
+1. pre-request prepare
+
