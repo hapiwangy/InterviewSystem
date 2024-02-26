@@ -32,7 +32,9 @@ def copyfromtwotoone(excelname: str, fromworksheet: str, toworksheetname: str)->
             addingdatas(excelbook, SheetNames, which, item)
             pass_letter, fail_letter = turningToList(pass_letter, fail_letter, which, item, header_to_index)
             for index, i in enumerate(item):
-                to_work[f"{chr(ord('A') + index)}{last_row}"] = i.value
+                if index == 0:
+                    continue
+                to_work[f"{chr(ord('A') + index - 1)}{last_row}"] = i.value
     # do the letter order management
     pass_dec = False
     fail_dec = False
@@ -65,15 +67,33 @@ def wheretogo(state, title)->str:
             return "nontechpass1"
         else:
             print("An Error has occured! when deciding where to go!")
+
 # adding datas in specific excel
 def addingdatas(excelbook, SheetNames, whichsheet, item)-> None:
+    import helper
+    # 更改方向: 根據要加到哪個workbook裡面，再決定要透過什麼樣的方是來做添加
     target_book = excelbook.worksheets[SheetNames.index(whichsheet)]
     last_rows = target_book.max_row
-    for index, i in enumerate(item):
-        if index == len(item) - 1:
-            target_book[f"{chr(ord('A') + index)}{last_rows+1}"] = None
-        else:
-            target_book[f"{chr(ord('A') + index)}{last_rows+1}"] = i.value
+    currentdate = helper.ReturnCurrentDate()
+    if whichsheet == 'ThanksList':
+        # 計算時間戳記並增加到最前面
+        target_book[f"B{last_rows+1}"] = currentdate    
+        # 把除了通過以外的東西都加到新的sheet裡面
+        for index, i in enumerate(item):
+            # 不要管通過的部分
+            if index == 0:
+                continue
+            else:
+                target_book[f"{chr(ord('A') + index + 1)}{last_rows+1}"] = i.value    
+    elif whichsheet == 'techpass1' or whichsheet == 'nontechpass1':
+        target_book[f"A{last_rows+1}"] = currentdate  
+        for index, i in enumerate(item):
+            if index == 0:
+                target_book[f"{chr(ord('A') + index)}{last_rows+1}"] = None
+            else:
+                target_book[f"{chr(ord('A') + index)}{last_rows+1}"] = i.value
+    else:
+        print('沒有這個選項喔 ==')
 # turning element into list
 def turningToList(pass_letter, fail_letter, which, item, header_to_index) -> list:
     if which == "ThanksList":
@@ -86,8 +106,21 @@ def turningToList(pass_letter, fail_letter, which, item, header_to_index) -> lis
         
 # extract name, email, phone number
 def extractnep(item, header_to_index) -> tuple:
-    data = [str(x) for x in (item[header_to_index['姓名']].value,item[header_to_index['郵件']].value,item[header_to_index['通過']].value)]
+    titles = list(header_to_index.keys())
+    specdata = [item[header_to_index[x]] for x in titles] 
+    data = [str(x) for x in specdata]
     return tuple(data)
+
+# making the dictionary about column to index
+def worksheet_column_index(excelbook, SheetNames, worksheet)->dict:
+    temp_dict = {}
+    # 找到每一個第一排的東西
+    current_work_sheet = excelbook.worksheets[SheetNames.index(worksheet)]
+    current_work_sheet = list(current_work_sheet)[0]
+    for index, i in enumerate(current_work_sheet):
+        temp_dict[i.value] = index  
+    return temp_dict
+
 
 
     

@@ -9,3 +9,4 @@ phase2Helper.copyfromtwotoone(excelname, tech1worksheet, tech2worksheet, index=4
 nontech1worksheet = "nontechpass1"
 nontech2worksheet = "nontechpass2"
 phase2Helper.copyfromtwotoone(excelname, nontech1worksheet, nontech2worksheet, index=5)
+print("phase2 end Successfully!")

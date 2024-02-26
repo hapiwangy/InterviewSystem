@@ -21,3 +21,26 @@ def NameListTomail(NameList: list, name: str, phase:str, port:str)-> None:
             fp.write(",".join(n))
             fp.write(f"\n")
     return None
+def establishdirectory(NameLists:list)-> None:
+    '''
+        establish directory according to the namelist 
+    '''
+    import os
+    for name in NameLists:  
+        try:
+            os.mkdir(name)
+        except:
+            print(f"{name} already exist!")
+def dealingwithmergecell(excelname:str):
+    '''
+        dealing with the excel that contain merge cell
+    '''
+    import pandas as pd
+    # 读取 Excel 文件
+    df = pd.read_excel(f'{excelname}.xlsx')
+
+    # 将合并单元格的值填充到所有合并单元格的单元格
+    df = df.fillna(method='ffill')
+
+    # 保存处理后的 DataFrame 到 Excel 文件
+    df.to_excel(f'{excelname}_revise.xlsx', index=False)
