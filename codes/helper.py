@@ -7,7 +7,7 @@ def ReturnCurrentDate()-> str:
     currentdate = str(currentdate)[:10]
     currentdate = "".join(currentdate.split('-'))
     return currentdate
-def NameListTomail(NameList: list, name: str, phase:str, port:str)-> None:
+def NameListTomail(NameList: list, name: str, phase:str, port:str, header_to_index)-> None:
     '''
         this function will turn namelist and name into a record list
         Namelist: record the name lists 
@@ -15,10 +15,10 @@ def NameListTomail(NameList: list, name: str, phase:str, port:str)-> None:
     '''
     # produce a current date function
     currentdate = ReturnCurrentDate()
-    with open(f"{phase}_{port}\\{name}{currentdate}.csv", "w+") as fp:
-        fp.write("name,mail,passornot\n")
+    with open(f"{phase}_{port}\\{name}{currentdate}.csv", "w+", encoding="utf-8-sig") as fp:
+        fp.write("name,mail,phone\n")
         for n in NameList:
-            fp.write(",".join(n))
+            fp.write(f"{n[header_to_index['姓名']].value},{n[header_to_index['Email']].value},{n[header_to_index['手機號碼']].value}")
             fp.write(f"\n")
     return None
 def establishdirectory(NameLists:list)-> None:

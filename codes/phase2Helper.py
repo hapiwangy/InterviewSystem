@@ -39,27 +39,26 @@ def copyfromtwotoone(excelname: str, fromworksheet: str, toworksheetname: str ,i
                 last_tks_row += 1
                 tks_work[f"B{last_tks_row}"] = currentdate 
                 for index, i in enumerate(item):
-                    if index == 0: continue
-                    tks_work[f"{chr(ord('A') + index + 1)}{last_tks_row}"] = i.value  
+                    if index == 0 or index == 1: continue
+                    tks_work[f"{chr(ord('A') + index)}{last_tks_row}"] = i.value  
             elif which == 'notyet':
                 notdecidecandiate.append(item)
                 ## 代表還沒決定要放到哪裡，所以先跳過
                 continue 
             else:
-                last_row += 1
-                to_work[f"B{last_row}"] = currentdate 
+                last_row += 1 
                 for index, i in enumerate(item):
                     if index == 0: continue
-                    to_work[f"{chr(ord('A') + index + 1)}{last_row}"] = i.value
-                       
+                    to_work[f"{chr(ord('A') + index)}{last_row}"] = i.value
+                to_work[f"B{last_row}"] = currentdate       
     # do the letter order management
     pass_dec = False
     fail_dec = False
     if pass_letter:
-        helper.NameListTomail(pass_letter, "通過二階段面試名單", "phase2", "pass")
+        helper.NameListTomail(pass_letter, "通過二階段面試名單", "phase2", "pass", header_to_index)
         pass_dec = not pass_dec
     if fail_letter:
-        helper.NameListTomail(fail_letter, "第二階段感謝信名單", "phase2", "thanks")
+        helper.NameListTomail(fail_letter, "第二階段感謝信名單", "phase2", "thanks", header_to_index)
         fail_dec = not fail_dec
     if not pass_dec and not fail_dec:
         print("本次沒有人通過以及被刷掉，請透過人工確認是否有誤")
@@ -99,7 +98,7 @@ def addingdatas(excelbook, SheetNames, whichsheet, item)-> None:
     last_rows = target_book.max_row
     currentdate = helper.ReturnCurrentDate()
     # 計算時間戳記並增加到最前面
-    target_book[f"B{last_rows+1}"] = currentdate    
+    target_book[f"C{last_rows+1}"] = currentdate    
     # 把除了通過以外的東西都加到新的sheet裡面
     for index, i in enumerate(item):
         # 不要管通過的部分
@@ -110,9 +109,9 @@ def addingdatas(excelbook, SheetNames, whichsheet, item)-> None:
 # turning element into list
 def turningToList(pass_letter, fail_letter, which, item, header_to_index) -> list:
     if which == "ThanksList":
-        fail_letter.append(extractnep(item, header_to_index))
+        fail_letter.append(item)
     elif which == "techpass1" or which == "nontechpass1":
-        pass_letter.append(extractnep(item, header_to_index))
+        pass_letter.append(item)
     elif which == "notyet":
         print('not yet decide where this guy can go')
     else:
@@ -122,7 +121,7 @@ def turningToList(pass_letter, fail_letter, which, item, header_to_index) -> lis
 # extract name, email, phone number
 def extractnep(item, header_to_index) -> tuple:
     titles = list(header_to_index.keys())
-    specdata = [item[header_to_index[x]] for x in titles] 
+    specdata = [item[header_to_index[x]].value for x in titles] 
     data = [str(x) for x in specdata]
     return tuple(data)
 

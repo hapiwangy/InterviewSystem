@@ -39,10 +39,10 @@ def copyfromtwotoone(excelname: str, fromworksheet: str, toworksheetname: str)->
     pass_dec = False
     fail_dec = False
     if pass_letter:
-        helper.NameListTomail(pass_letter, "通過一階段面試名單", "phase1", "pass")
+        helper.NameListTomail(pass_letter, "通過一階段面試名單", "phase1", "pass", header_to_index)
         pass_dec = not pass_dec
     if fail_letter:
-        helper.NameListTomail(fail_letter, "第一階段感謝信名單", "phase1", "thanks")
+        helper.NameListTomail(fail_letter, "第一階段感謝信名單", "phase1", "thanks", header_to_index)
         fail_dec = not fail_dec
     if not pass_dec and not fail_dec:
         print("本次沒有人通過以及被刷掉，請透過人工確認是否有誤")
@@ -86,20 +86,20 @@ def addingdatas(excelbook, SheetNames, whichsheet, item)-> None:
             else:
                 target_book[f"{chr(ord('A') + index + 1)}{last_rows+1}"] = i.value    
     elif whichsheet == 'techpass1' or whichsheet == 'nontechpass1':
-        target_book[f"A{last_rows+1}"] = currentdate  
+        target_book[f"B{last_rows+1}"] = currentdate  
         for index, i in enumerate(item):
             if index == 0:
-                target_book[f"{chr(ord('A') + index)}{last_rows+1}"] = None
+                target_book[f"{chr(ord('A') + index + 1)}{last_rows+1}"] = None
             else:
-                target_book[f"{chr(ord('A') + index)}{last_rows+1}"] = i.value
+                target_book[f"{chr(ord('A') + index + 1)}{last_rows+1}"] = i.value
     else:
         print('沒有這個選項喔 ==')
 # turning element into list
 def turningToList(pass_letter, fail_letter, which, item, header_to_index) -> list:
     if which == "ThanksList":
-        fail_letter.append(extractnep(item, header_to_index))
+        fail_letter.append(item)
     elif which == "techpass1" or which == "nontechpass1":
-        pass_letter.append(extractnep(item, header_to_index))
+        pass_letter.append(item)
     else:
         print("an error occur! when manage datas to list")
     return (pass_letter, fail_letter)
@@ -107,7 +107,7 @@ def turningToList(pass_letter, fail_letter, which, item, header_to_index) -> lis
 # extract name, email, phone number
 def extractnep(item, header_to_index) -> tuple:
     titles = list(header_to_index.keys())
-    specdata = [item[header_to_index[x]] for x in titles] 
+    specdata = [item[header_to_index[x]].value for x in titles] 
     data = [str(x) for x in specdata]
     return tuple(data)
 
