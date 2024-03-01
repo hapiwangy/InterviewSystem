@@ -49,8 +49,8 @@ def copyfromtwotoone(excelname: str, fromworksheet: str, toworksheetname: str ,i
                 last_row += 1 
                 for index, i in enumerate(item):
                     if index == 0: continue
-                    to_work[f"{chr(ord('A') + index)}{last_row}"] = i.value
-                to_work[f"B{last_row}"] = currentdate       
+                    to_work[f"{chr(ord('A') + index + 1)}{last_row}"] = i.value
+                to_work[f"C{last_row}"] = currentdate       
     # do the letter order management
     pass_dec = False
     fail_dec = False
